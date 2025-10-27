@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunchBay - Reports</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    <span>LunchBay</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                        <li><a href="#" class="active">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-outline" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline"><i class="fas fa-user"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Reports & Analytics</h1>
+            <p>Generate comprehensive reports and analyze your food management performance</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- Report Generator -->
+        <div class="dashboard-section">
+            <h2>Generate Report</h2>
+            <div class="report-generator">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reportType">Report Type *</label>
+                        <select id="reportType" class="form-control" required>
+                            <option value="">Select Report Type</option>
+                            <option value="inventory">Inventory Analysis</option>
+                            <option value="waste">Food Waste Report</option>
+                            <option value="donations">Donation Impact Report</option>
+                            <option value="financial">Financial Impact</option>
+                            <option value="environmental">Environmental Impact</option>
+                            <option value="comprehensive">Comprehensive Summary</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportPeriod">Time Period *</label>
+                        <select id="reportPeriod" class="form-control" required>
+                            <option value="">Select Period</option>
+                            <option value="last-week">Last 7 Days</option>
+                            <option value="last-month">Last 30 Days</option>
+                            <option value="last-quarter">Last 90 Days</option>
+                            <option value="last-year">Last 365 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row" id="customDateRange" style="display: none;">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="includeCharts" checked>
+                        <span class="checkmark"></span>
+                        Include Charts & Visualizations
+                    </label>
+                </div>
+                
+                <div class="report-actions">
+                    <button class="btn btn-primary" id="generateReportBtn">
+                        <i class="fas fa-chart-bar"></i> Generate Report
+                    </button>
+                    <button class="btn btn-outline" id="exportReportBtn" disabled>
+                        <i class="fas fa-download"></i> Export as PDF
+                    </button>
+                    <button class="btn btn-outline" id="printReportBtn" disabled>
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Preview -->
+        <div class="dashboard-section" id="reportPreviewSection" style="display: none;">
+            <h2>Report Preview</h2>
+            <div class="report-preview" id="reportPreview">
+                <!-- Report content will be generated here -->
+            </div>
+        </div>
+
+        <!-- Quick Reports -->
+        <div class="dashboard-section">
+            <h2>Quick Reports</h2>
+            <div class="quick-reports-grid">
+                <div class="quick-report-card" data-report="waste" data-period="last-week">
+                    <div class="report-icon">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <div class="report-content">
+                        <h4>Weekly Waste Summary</h4>
+                        <p>Food waste and disposal analysis for the past 7 days</p>
+                    </div>
+                </div>
+                
+                <div class="quick-report-card" data-report="donations" data-period="last-month">
+                    <div class="report-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div class="report-content">
+                        <h4>Monthly Donation Impact</h4>
+                        <p>Donation statistics and community impact for the past 30 days</p>
+                    </div>
+                </div>
+                
+                <div class="quick-report-card" data-report="inventory" data-period="last-quarter">
+                    <div class="report-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="report-content">
+                        <h4>Quarterly Inventory Trends</h4>
+                        <p>Inventory patterns and consumption analysis for the past 90 days</p>
+                    </div>
+                </div>
+                
+                <div class="quick-report-card" data-report="financial" data-period="last-year">
+                    <div class="report-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="report-content">
+                        <h4>Annual Financial Impact</h4>
+                        <p>Cost savings and financial benefits for the past year</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Templates -->
+        <div class="dashboard-section">
+            <h2>Report Templates</h2>
+            <div class="templates-grid">
+                <div class="template-card">
+                    <h4>Regulatory Compliance Report</h4>
+                    <p>Food safety and donation compliance documentation</p>
+                    <button class="btn btn-outline template-use-btn" data-template="compliance">
+                        Use Template
+                    </button>
+                </div>
+                
+                <div class="template-card">
+                    <h4>Stakeholder Impact Report</h4>
+                    <p>Community impact and social responsibility summary</p>
+                    <button class="btn btn-outline template-use-btn" data-template="stakeholder">
+                        Use Template
+                    </button>
+                </div>
+                
+                <div class="template-card">
+                    <h4>Sustainability Report</h4>
+                    <p>Environmental impact and sustainability metrics</p>
+                    <button class="btn btn-outline template-use-btn" data-template="sustainability">
+                        Use Template
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i> Generating report...
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>LunchBay</h3>
+                    <p>Connecting restaurants with surplus food to communities in need.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                    </ul>
+                </div>
+               
+            </div>
+            <div class="copyright">
+                &copy; 2025 LunchBay. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Report generated successfully!</span>
+    </div>
+
+    <script src="reports.js"></script>
+</body>
+</html>

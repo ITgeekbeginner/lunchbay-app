@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunchBay - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    <span>LunchBay</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-outline" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline"><i class="fas fa-user"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>LunchBay Dashboard</h1>
+            <p>Connecting restaurants with surplus food to communities in need.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- Quick Stats Overview -->
+        <div class="dashboard-section">
+            <h2>Quick Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card large">
+                    <div class="stat-icon total">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalItems">0</div>
+                        <div class="stat-label">Total Items in Inventory</div>
+                        <div class="stat-trend positive" id="inventoryTrend">
+                            <i class="fas fa-arrow-up"></i> 12% from last week
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card large">
+                    <div class="stat-icon savings">
+                        <i class="fas fa-rand-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="costSavings">R0</div>
+                        <div class="stat-label">Monthly Cost Savings</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i> R245 this month
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card large">
+                    <div class="stat-icon impact">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="mealsDonated">0</div>
+                        <div class="stat-label">Meals Donated</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i> 45 this week
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="dashboard-section">
+            <h2>Analytics & Trends</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Inventory Status Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Waste Reduction Over Time</h3>
+                    <div class="chart-container">
+                        <canvas id="wasteChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Category Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Expiration Timeline</h3>
+                    <div class="chart-container">
+                        <canvas id="expirationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Alerts -->
+        <div class="dashboard-section">
+            <div class="two-column-layout">
+                <div class="column">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-feed" id="activityFeed">
+                        <!-- Activity items will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <h3>Priority Alerts</h3>
+                    <div class="alerts-container" id="alertsContainer">
+                        <!-- Alerts will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-section">
+            <h2>Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <button class="action-card" onclick="location.href='index.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>Manage Inventory</h4>
+                        <p>Add, edit, or view food items</p>
+                    </div>
+                </button>
+                
+                <button class="action-card" id="quickAddBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>Quick Add Item</h4>
+                        <p>Add a new food item quickly</p>
+                    </div>
+                </button>
+                
+                <button class="action-card" id="generateReportBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>Generate Report</h4>
+                        <p>Create inventory or waste report</p>
+                    </div>
+                </button>
+                
+                <button class="action-card" id="viewDonationsBtn">
+                    <div class="action-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>Donation Center</h4>
+                        <p>Manage food donations</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading dashboard data...
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>LunchBay</h3>
+                    <p>Connecting restaurants with surplus food to communities in need.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                    </ul>
+                </div>
+              
+            </div>
+            <div class="copyright">
+                &copy; 2025 LunchBay. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Quick Add Modal -->
+    <div class="modal" id="quickAddModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Quick Add Item</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="quickAddForm">
+                    <div class="form-group">
+                        <label for="quickItemName">Item Name *</label>
+                        <input type="text" id="quickItemName" class="form-control" placeholder="e.g., Bananas" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quickItemQuantity">Quantity *</label>
+                            <input type="number" id="quickItemQuantity" class="form-control" placeholder="e.g., 5" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quickItemUnit">Unit *</label>
+                            <select id="quickItemUnit" class="form-control" required>
+                                <option value="">Select Unit</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="lbs">Pounds</option>
+                                <option value="kg">Kilograms</option>
+                                <option value="servings">Servings</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quickExpirationDate">Expiration Date *</label>
+                        <input type="date" id="quickExpirationDate" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelQuickAddBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveQuickAddBtn">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunchBay - Inventory Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    <span>LunchBay</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html" class="active">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-outline" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline"><i class="fas fa-user"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Food Inventory Tracker</h1>
+            <p>Helping reduce food waste</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon expired">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-number" id="expiredCount">0</div>
+                <div class="stat-label">Expired Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon expiring">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" id="expiringCount">0</div>
+                <div class="stat-label">Expiring Soon</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon fresh">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number" id="freshCount">0</div>
+                <div class="stat-label">Fresh Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+        </div>
+
+        <div class="inventory-actions">
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search food items...">
+                </div>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="expired">Expired</option>
+                    <option value="expiring">Expiring Soon</option>
+                    <option value="fresh">Fresh</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="addItemBtn">
+                <i class="fas fa-plus"></i> Add Item
+            </button>
+        </div>
+
+        <div class="inventory-table">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Expiration Date</th>
+                        <th>Condition</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading inventory...
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>LunchBay</h3>
+                    <p>Connecting restaurants with surplus food to communities in need.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 LunchBay. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add/Edit Item Modal -->
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Food Item</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" class="form-control" placeholder="e.g., Leftover Pizza" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCategory">Category *</label>
+                        <select id="itemCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemQuantity">Quantity *</label>
+                            <input type="number" id="itemQuantity" class="form-control" placeholder="e.g., 5" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemUnit">Unit *</label>
+                            <select id="itemUnit" class="form-control" required>
+                                <option value="">Select Unit</option>
+                                <option value="servings">Servings</option>
+                                <option value="lbs">Pounds (lbs)</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="gallons">Gallons</option>
+                                <option value="liters">Liters</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expirationDate">Expiration Date *</label>
+                        <input type="date" id="expirationDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCondition">Condition *</label>
+                        <select id="itemCondition" class="form-control" required>
+                            <option value="">Select Condition</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemNotes">Notes (Optional)</label>
+                        <textarea id="itemNotes" class="form-control" rows="3" placeholder="Any additional details about this item..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-spinner fa-spin" id="saveSpinner" style="display: none;"></i>
+                    <span id="saveText">Save Item</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<!-- Admin Panel Modal -->
+<div class="modal" id="adminModal">
+    <div class="modal-content admin-modal">
+        <div class="modal-header">
+            <h2>Admin Panel</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="admin-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="users">Users</button>
+                    <button class="tab-btn" data-tab="settings">Settings</button>
+                    <button class="tab-btn" data-tab="reports">Reports</button>
+                    <button class="tab-btn" data-tab="system">System Info</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Users Tab -->
+                    <div class="tab-pane active" id="users-tab">
+                        <h3>User Management</h3>
+                        <div class="admin-section">
+                            <div class="user-list" id="userList">
+                                <!-- Users will be populated here -->
+                            </div>
+                            <div class="admin-actions">
+                                <button class="btn btn-primary" id="addUserBtn">
+                                    <i class="fas fa-user-plus"></i> Add User
+                                </button>
+                                <button class="btn btn-outline" id="refreshUsersBtn">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Tab -->
+                    <div class="tab-pane" id="settings-tab">
+                        <h3>System Settings</h3>
+                        <div class="admin-section">
+                            <div class="setting-group">
+                                <label for="expirationAlertDays">Expiration Alert Days</label>
+                                <input type="number" id="expirationAlertDays" class="form-control" value="3" min="1" max="7">
+                                <small>Number of days before expiration to show alerts</small>
+                            </div>
+                            <div class="setting-group">
+                                <label for="autoBackup">Automatic Backup</label>
+                                <select id="autoBackup" class="form-control">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly" selected>Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="never">Never</option>
+                                </select>
+                            </div>
+                            <div class="setting-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="checkmark"></span>
+                                    Enable Email Notifications
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reports Tab -->
+                    <div class="tab-pane" id="reports-tab">
+                        <h3>System Reports</h3>
+                        <div class="admin-section">
+                            <div class="report-options">
+                                <div class="form-group">
+                                    <label for="reportType">Report Type</label>
+                                    <select id="reportType" class="form-control">
+                                        <option value="waste">Food Waste Analysis</option>
+                                        <option value="donations">Donation Impact</option>
+                                        <option value="inventory">Inventory Trends</option>
+                                        <option value="users">User Activity</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="startDate">Start Date</label>
+                                        <input type="date" id="startDate" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" id="endDate" class="form-control">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="generateReportBtn">
+                                    <i class="fas fa-chart-bar"></i> Generate Report
+                                </button>
+                            </div>
+                            <div class="report-preview" id="reportPreview" style="display: none;">
+                                <h4>Report Preview</h4>
+                                <div id="reportContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Info Tab -->
+                    <div class="tab-pane" id="system-tab">
+                        <h3>System Information</h3>
+                        <div class="admin-section">
+                            <div class="system-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Server Status</span>
+                                    <span class="stat-value online" id="serverStatus">Online</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Database</span>
+                                    <span class="stat-value" id="dbStatus">Connected</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Total Users</span>
+                                    <span class="stat-value" id="totalUsers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Storage Used</span>
+                                    <span class="stat-value" id="storageUsed">0 MB</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Last Backup</span>
+                                    <span class="stat-value" id="lastBackup">Never</span>
+                                </div>
+                            </div>
+                            <div class="admin-actions">
+                                <button class="btn btn-outline" id="systemRefreshBtn">
+                                    <i class="fas fa-sync-alt"></i> Refresh Status
+                                </button>
+                                <button class="btn btn-primary" id="backupNowBtn">
+                                    <i class="fas fa-download"></i> Backup Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="adminCancelBtn">Close</button>
+            <button class="btn btn-primary" id="adminSaveBtn">Save Settings</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal" id="addUserModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New User</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newUserName">Full Name *</label>
+                    <input type="text" id="newUserName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserEmail">Email *</label>
+                    <input type="email" id="newUserEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserRole">Role *</label>
+                    <select id="newUserRole" class="form-control" required>
+                        <option value="user">User</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">Temporary Password *</label>
+                    <input type="password" id="newUserPassword" class="form-control" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="cancelAddUserBtn">Cancel</button>
+            <button class="btn btn-primary" id="saveUserBtn">Create User</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Item saved successfully!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunchBay - Donations</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    <span>LunchBay</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="#" class="active">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-outline" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline"><i class="fas fa-user"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Food Donations</h1>
+            <p>Manage your food donations, track impact, and connect with community organizations</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- Donation Stats -->
+        <div class="dashboard-section">
+            <h2>Donation Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-card large">
+                    <div class="stat-icon impact">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalMeals">0</div>
+                        <div class="stat-label">Total Meals Donated</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i> 45 this week
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card large">
+                    <div class="stat-icon savings">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalWeight">0 lbs</div>
+                        <div class="stat-label">Food Waste Prevented</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i> 28 lbs saved
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card large">
+                    <div class="stat-icon environmental">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="co2Reduced">0 kg</div>
+                        <div class="stat-label">CO₂ Emissions Reduced</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i> 12 kg saved
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation Actions -->
+        <div class="donation-actions">
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="newDonationBtn">
+                    <i class="fas fa-plus"></i> New Donation
+                </button>
+                <button class="btn btn-outline" id="bulkDonateBtn">
+                    <i class="fas fa-boxes"></i> Bulk Donate Expiring Items
+                </button>
+                <button class="btn btn-outline" id="schedulePickupBtn">
+                    <i class="fas fa-truck"></i> Schedule Pickup
+                </button>
+            </div>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="inventory-actions">
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchDonations" placeholder="Search donations...">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <select class="filter-select" id="recipientFilter">
+                    <option value="">All Recipients</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="inventory-table">
+            <table id="donationsTable">
+                <thead>
+                    <tr>
+                        <th>Donation ID</th>
+                        <th>Recipient</th>
+                        <th>Items</th>
+                        <th>Total Weight</th>
+                        <th>Scheduled Date</th>
+                        <th>Status</th>
+                        <th>Impact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="donationsBody">
+                    <!-- Donations will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading donations...
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>LunchBay</h3>
+                    <p>Connecting restaurants with surplus food to communities in need.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="index.html">Inventory</a></li>
+                        <li><a href="donations.html">Donations</a></li>
+                        <li><a href="recipients.html">Recipients</a></li>
+                    </ul>
+                </div>
+               
+            </div>
+            <div class="copyright">
+                &copy; 2025 LunchBay. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- New Donation Modal -->
+    <div class="modal" id="donationModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2 id="donationModalTitle">New Donation</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="donationForm">
+                    <div class="form-group">
+                        <label for="donationRecipient">Recipient Organization *</label>
+                        <select id="donationRecipient" class="form-control" required>
+                            <option value="">Select Recipient</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donationDate">Scheduled Pickup/Delivery Date *</label>
+                        <input type="datetime-local" id="donationDate" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Items to Donate</label>
+                        <div class="available-items" id="availableItems">
+                            <!-- Available items will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="selected-items" id="selectedItemsSection" style="display: none;">
+                        <h4>Selected Items</h4>
+                        <div id="selectedItemsList"></div>
+                        <div class="donation-summary" id="donationSummary"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelDonationBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveDonationBtn">Schedule Donation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Details Modal -->
+    <div class="modal" id="donationDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Donation Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="donationDetailsContent">
+                    <!-- Donation details will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeDetailsBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <script src="donations.js"></script>
+</body>
+</html>
